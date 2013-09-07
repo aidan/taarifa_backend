@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from flask.ext.script import Manager, Server
 
 from taarifa_backend import app
-from taarifa_backend.models import Role, User
+from taarifa_backend.models import clear_database, Role, User
 
 manager = Manager(app)
 
@@ -20,7 +20,11 @@ manager.add_command("runserver", Server(
 
 # Setup roles and initial admin user
 @manager.option("-e", "--email", dest="email")
-def setup(email):
+@manager.option("-c", "--clean", dest="clean", action="store_true", default=False)
+def setup(email, clean):
+    if clean:
+        clear_database()
+
     if email is None:
         print "Please provide a valid email address for the admin"
 

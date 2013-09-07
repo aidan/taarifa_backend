@@ -103,3 +103,8 @@ def get_available_services():
 
 def get_service_class(service_code):
     return service_codes.get(service_code, None)
+
+
+def clear_database():
+    for cls in [Reportable, Role, User]:
+        cls.drop_collection()
