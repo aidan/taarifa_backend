@@ -1,5 +1,6 @@
 import datetime
 from flask import url_for
+from flask.ext.security import RoleMixin, UserMixin
 from taarifa_backend import db
 
 
@@ -73,6 +74,17 @@ service_codes = {'wp001': Waterpoint,
                  '0001': BasicReport,
                  '0002': AdvancedReport,
                 }
+
+class Role(db.Document, RoleMixin):
+    name = db.StringField(max_length=80, unique=True)
+    description = db.StringField(max_length=255)
+
+class User(db.Document, UserMixin):
+    email = db.StringField(max_length=255, unique=True)
+    password = db.StringField(max_length=255)
+    active = db.BooleanField(default=True)
+    confirmed_at = db.DateTimeField()
+    roles = db.ListField(db.ReferenceField(Role), default=[])
 
 def get_available_services():
     return [BasicReport, AdvancedReport]
