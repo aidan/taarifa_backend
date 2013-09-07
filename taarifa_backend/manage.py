@@ -4,7 +4,9 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from flask.ext.script import Manager, Server
+
 from taarifa_backend import app
+from taarifa_backend.models import Role, User
 
 manager = Manager(app)
 
@@ -14,6 +16,21 @@ manager.add_command("runserver", Server(
     use_reloader=True,
     host='0.0.0.0')
 )
+
+
+# Setup roles and initial admin user
+@manager.option("-e", "--email", dest="email")
+def setup(email):
+    if email is None:
+        print "Please provide a valid email address for the admin"
+
+    role = Role(name="admin", description="Tarrifa Admin")
+    role.save()
+
+    user = User()
+    user.email = email
+    user.roles = [role]
+    user.save()
 
 if __name__ == "__main__":
     manager.run()
