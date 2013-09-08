@@ -19,14 +19,11 @@ manager.add_command("runserver", Server(
 
 
 # Setup roles and initial admin user
-@manager.option("-e", "--email", dest="email")
+@manager.option("-e", "--email", dest="email", required=True)
 @manager.option("-c", "--clean", dest="clean", action="store_true", default=False)
 def setup(email, clean):
     if clean:
         clear_database()
-
-    if email is None:
-        print "Please provide a valid email address for the admin"
 
     role = Role(name="admin", description="Tarrifa Admin")
     role.save()
