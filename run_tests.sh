@@ -19,7 +19,6 @@ fi
 
 NOSETEST_OPTIONS="$NOSETEST_OPTIONS $TESTS"
 
-rm test.log
-nosetests $NOSETEST_OPTIONS 2>&1 | tee -a test.log
+DBNAME=taarifa_backend_test nosetests $NOSETEST_OPTIONS 2>&1 | tee test.log
 
 exit ${PIPESTATUS[0]}
