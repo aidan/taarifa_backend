@@ -28,7 +28,8 @@ def setup(email, clean):
     if clean:
         clear_database()
 
-    role = Role.objects.get(name="admin") or Role(name="admin", description="Taarifa Admin").save()
+    role, _ = Role.objects.get_or_create(name="admin",
+                                         defaults={'description': 'Taarifa Admin'})
     User(email=email, roles=[role]).save()
 
 if __name__ == "__main__":
