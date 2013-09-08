@@ -1,5 +1,9 @@
 Flask
 Flask-Script
 flask-mongoengine
+Flask-RESTful
 flask-security
 requests
+
+# Flask-RESTful requires this but doesn't specify it
+six
