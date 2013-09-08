@@ -30,7 +30,9 @@ def setup(email, clean):
 
     role, _ = Role.objects.get_or_create(name="admin",
                                          defaults={'description': 'Taarifa Admin'})
-    User(email=email, roles=[role]).save()
+    _, created = User.objects.get_or_create(email=email, defaults={'roles': [role]})
+    if not created:
+        print "User with email address %s did already exist and was not created" % email
 
 if __name__ == "__main__":
     manager.run()
