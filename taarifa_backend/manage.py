@@ -19,18 +19,17 @@ manager.add_command("runserver", Server(
 
 
 # Setup roles and initial admin user
-@manager.option("-e", "--email", dest="email", required=True)
-@manager.option("-c", "--clean", dest="clean", action="store_true", default=False)
+@manager.option("-e", "--email", dest="email", required=True,
+                help="Email address (required)")
+@manager.option("-c", "--clean", dest="clean", action="store_true",
+                default=False, help="Clear the user and role database")
 def setup(email, clean):
+    """Create a new admin user with given email address."""
     if clean:
         clear_database()
 
     role = Role.objects.get(name="admin") or Role(name="admin", description="Taarifa Admin").save()
-
-    user = User()
-    user.email = email
-    user.roles = [role]
-    user.save()
+    User(email=email, roles=[role]).save()
 
 if __name__ == "__main__":
     manager.run()
