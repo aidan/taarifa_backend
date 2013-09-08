@@ -17,7 +17,7 @@ if environ.get('MONGOLAB_URI'):
                                       'port': url.port,
                                       'db': url.path[1:]}
 else:
-    app.config['MONGODB_SETTINGS'] = {'db': "taarifa_backend"}
+    app.config['MONGODB_SETTINGS'] = {'db': environ.get("DBNAME", "taarifa_backend")}
 app.config['SECRET_KEY'] = 'hush'
 
 db = MongoEngine(app)
