@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify, render_template, make_response
-from taarifa_backend import app
+from flask.ext import restful
+from flask.ext.security import (Security, MongoEngineUserDatastore,
+                                http_auth_required)
+from taarifa_backend import app, db
 from models import BasicReport, Reportable
 from utils import crossdomain, jsonp
 import models
@@ -9,6 +12,10 @@ import _help
 import pprint
 
 logger = app.logger
+
+user_datastore = MongoEngineUserDatastore(db, models.User, models.Role)
+security = Security(app, user_datastore)
+api = restful.Api(app)
 
 def get_services():
     response = {}
@@ -104,3 +111,33 @@ def get_report(id = False):
 def get_list_of_all_services():
     # TODO: factor out the transformation from a service to json
     return jsonify(**get_services())
+
+class AdminService(restful.Resource):
+    
+    @crossdomain(origin='*', headers="Origin, X-Requested-With, Content-Type, Accept")
+    @http_auth_required
+    def post(self):
+        """
+        create an admin in the backend
+        """
+        logger.debug('New admin received')
+        logger.debug('JSON: ' + request.json.__repr__())
+
+        # TODO: Deal with errors regarding a non existing service code
+        required = ["email", "password"]
+        missing  = list(set(required) - set(request.json.keys()))
+        if missing:
+            response = jsonify({"Error": "Validation Error",
+                                "Missing": missing})
+            response.status_code = 422
+            return response
+        
+        try:
+            user = user_datastore.create_user(email=request.json["email"],
+                                              password=request.json["password"])
+        except mongoengine.ValidationError, e:
+            return jsonify({'Error': 'Validation Error'})
+
+        return jsonify(_help.mongo_to_dict(user))
+    
+api.add_resource(AdminService, '/admin')
