@@ -23,6 +23,8 @@ app.config['SECRET_KEY'] = 'hush'
 
 db = MongoEngine(app)
 
+from taarifa_backend.api import api
+app.register_blueprint(api)
 
 def register_views():
     """

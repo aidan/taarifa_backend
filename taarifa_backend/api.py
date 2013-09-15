@@ -1,7 +1,7 @@
 import json
 from pprint import pformat
 
-from flask import request, jsonify, render_template, make_response
+from flask import Blueprint, request, jsonify, render_template, make_response
 from flask.ext.security import (Security, MongoEngineUserDatastore,
                                 http_auth_required)
 import mongoengine
@@ -17,6 +17,7 @@ logger = app.logger
 user_datastore = MongoEngineUserDatastore(db, models.User, models.Role)
 security = Security(app, user_datastore)
 
+api = Blueprint("api", __name__)
 
 def get_services():
     response = {}
@@ -48,12 +49,12 @@ def get_services():
     return response
 
 
-@app.route("/")
+@api.route("/")
 def landing():
     return render_template('landing.html', services=pformat(get_services()))
 
 
-@app.route("/reports", methods=['POST'])
+@api.route("/reports", methods=['POST'])
 @crossdomain(origin='*', headers="Origin, X-Requested-With, Content-Type, Accept")
 def receive_report():
     """
@@ -84,7 +85,7 @@ def receive_report():
     return jsonify(_help.mongo_to_dict(doc))
 
 
-@app.route("/reports", methods=['GET'])
+@api.route("/reports", methods=['GET'])
 @crossdomain(origin='*')
 @jsonp
 def get_all_reports():
@@ -100,7 +101,7 @@ def get_all_reports():
     return make_response(json.dumps(result))
 
 
-@app.route("/reports/<string:id>", methods=['GET'])
+@api.route("/reports/<string:id>", methods=['GET'])
 @crossdomain(origin='*')
 @jsonp
 def get_report(id=False):
@@ -110,7 +111,7 @@ def get_report(id=False):
     return jsonify(_help.mongo_to_dict(report))
 
 
-@app.route("/services", methods=['GET'])
+@api.route("/services", methods=['GET'])
 @crossdomain(origin='*')
 @jsonp
 def get_list_of_all_services():
@@ -118,7 +119,7 @@ def get_list_of_all_services():
     return jsonify(**get_services())
 
 
-@app.route("/admin", methods=["POST"])
+@api.route("/admin", methods=["POST"])
 @http_auth_required
 @crossdomain(origin='*', headers="Origin, X-Requested-With, Content-Type, Accept")
 @jsonp
