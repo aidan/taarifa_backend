@@ -4,6 +4,7 @@ import urlparse
 
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
+from flask.ext.security import Security, MongoEngineUserDatastore
 
 # configure the logging
 logging.basicConfig(level='DEBUG',
@@ -22,6 +23,10 @@ else:
 app.config['SECRET_KEY'] = 'hush'
 
 db = MongoEngine(app)
+
+import models
+user_datastore = MongoEngineUserDatastore(db, models.User, models.Role)
+security = Security(app, user_datastore)
 
 from taarifa_backend.api import api
 app.register_blueprint(api)

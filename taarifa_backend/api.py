@@ -3,20 +3,16 @@ import json
 from pprint import pformat
 
 from flask import Blueprint, request, jsonify, render_template, make_response
-from flask.ext.security import (Security, MongoEngineUserDatastore,
-                                http_auth_required)
+from flask.ext.security import http_auth_required
 import mongoengine
 
 import models
 from models import BasicReport, Reportable
-from taarifa_backend import app, db
+from taarifa_backend import user_datastore
 from utils import crossdomain, jsonp
 import _help
 
 logger = logging.getLogger(__name__)
-
-user_datastore = MongoEngineUserDatastore(db, models.User, models.Role)
-security = Security(app, user_datastore)
 
 api = Blueprint("api", __name__)
 
