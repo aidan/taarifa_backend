@@ -1,3 +1,4 @@
+import logging
 import json
 from pprint import pformat
 
@@ -12,7 +13,7 @@ from taarifa_backend import app, db
 from utils import crossdomain, jsonp
 import _help
 
-logger = app.logger
+logger = logging.getLogger(__name__)
 
 user_datastore = MongoEngineUserDatastore(db, models.User, models.Role)
 security = Security(app, user_datastore)
