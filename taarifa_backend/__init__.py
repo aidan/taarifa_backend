@@ -1,8 +1,9 @@
-from flask import Flask
-from flask.ext.mongoengine import MongoEngine
 import logging
 from os import environ
 import urlparse
+
+from flask import Flask
+from flask.ext.mongoengine import MongoEngine
 
 # configure the logging
 logging.basicConfig(level='DEBUG',

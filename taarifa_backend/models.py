@@ -1,5 +1,7 @@
 import datetime
+
 from flask.ext.security import RoleMixin, UserMixin
+
 from taarifa_backend import db
 
 
